@@ -33,10 +33,29 @@
     }
 
     async function fetchCurrencies() {
-        const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=250&page=1&sparkline=false');
-        let allCoins = await response.json();
-        
-        currencies = filterAndMapCurrencies(allCoins);
+        try {
+            const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=250&page=1&sparkline=false');
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const allCoins = await response.json();
+            
+            if (!Array.isArray(allCoins) || allCoins.length === 0) {
+                throw new Error('No currency data received');
+            }
+            
+            currencies = filterAndMapCurrencies(allCoins);
+            
+            if (currencies.length === 0) {
+                throw new Error('No valid currencies found in the response');
+            }
+        } catch (error) {
+            console.error('Error fetching currencies:', error);
+            showError(error.message || 'Failed to load currencies. Please check your internet connection and try again.');
+            throw error;
+        }
     }
 
     function filterAndMapCurrencies(allCoins) {
@@ -485,20 +504,19 @@
         });
     }
 
-    function showError() {
-        const errorHtml = `
-            <div class="error">
-                <i class="fas fa-exclamation-circle"></i>
-                <h2>Error Loading Data</h2>
-                <p>There was an error loading the currency data. Please try again later.</p>
-                <button onclick="window.location.reload()" class="btn-primary">
-                    <i class="fas fa-sync"></i> Retry
-                </button>
-            </div>
+    function showError(message = 'An error occurred while loading the data. Please try again later.') {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.innerHTML = `
+            <i class="fas fa-exclamation-circle"></i>
+            <h3>Oops! Something went wrong</h3>
+            <p>${message}</p>
+            <button onclick="location.reload()">Try Again</button>
         `;
         
         if (currencyCardsContainer) {
-            currencyCardsContainer.innerHTML = errorHtml;
+            currencyCardsContainer.innerHTML = '';
+            currencyCardsContainer.appendChild(errorDiv);
         }
     }
 

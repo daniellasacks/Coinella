@@ -83,20 +83,30 @@
     }
 
     async function fetchPriceData(symbols) {
-        const apiUrl = `https://min-api.cryptocompare.com/data/pricemulti?tsyms=usd&fsyms=${symbols}`;
-        const response = await fetch(apiUrl);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        
-        if (data.Response === 'Error' || !data || Object.keys(data).length === 0) {
-            throw new Error('Invalid data received');
-        }
+        try {
+            const apiUrl = `https://min-api.cryptocompare.com/data/pricemulti?tsyms=usd&fsyms=${symbols}`;
+            const response = await fetch(apiUrl);
+            
+            if (!response.ok) {
+                throw new Error(`API request failed with status ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.Response === 'Error') {
+                throw new Error(data.Message || 'API returned an error');
+            }
+            
+            if (!data || Object.keys(data).length === 0) {
+                throw new Error('No price data received from the API');
+            }
 
-        return data;
+            return data;
+        } catch (error) {
+            console.error('Error fetching price data:', error);
+            showError(error.message || 'Failed to fetch real-time price data. Please check your internet connection and try again.');
+            throw error;
+        }
     }
 
     function updateReports(data) {
@@ -334,18 +344,20 @@
         chart.update();
     }
 
-    function showError() {
-        console.error('reports.js: An error occurred.');
-        reportsContainer.innerHTML = `
-            <div class="error">
-                <i class="fas fa-exclamation-circle"></i>
-                <h2>Error Loading Data</h2>
-                <p>There was an error loading the currency data. Please try again later.</p>
-                <button onclick="window.location.reload()" class="btn-primary">
-                    <i class="fas fa-sync"></i> Retry
-                </button>
-            </div>
+    function showError(message = 'An error occurred while fetching real-time data. Please try again later.') {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.innerHTML = `
+            <i class="fas fa-exclamation-circle"></i>
+            <h3>Real-time Data Error</h3>
+            <p>${message}</p>
+            <button onclick="location.reload()">Try Again</button>
         `;
+        
+        if (reportsContainer) {
+            reportsContainer.innerHTML = '';
+            reportsContainer.appendChild(errorDiv);
+        }
     }
 
     function setupScrollAnimation() {
