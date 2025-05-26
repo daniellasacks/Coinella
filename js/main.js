@@ -52,7 +52,6 @@
                 throw new Error('No valid currencies found in the response');
             }
         } catch (error) {
-            console.error('Error fetching currencies:', error);
             showError(error.message || 'Failed to load currencies. Please check your internet connection and try again.');
             throw error;
         }

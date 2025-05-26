@@ -9,19 +9,14 @@
     const reportsContainer = document.getElementById('reportsContainer');
 
     function init() {
-        console.log('reports.js: init() called');
         if (!reportsContainer) {
-             console.error('reports.js: reportsContainer element not found!');
-             return;
+            return;
         }
         loadSelectedCurrenciesData();
-        console.log(`reports.js: selectedCurrenciesData size: ${selectedCurrenciesData.size}`);
 
         if (selectedCurrenciesData.size === 0) {
-            console.log('reports.js: No currencies selected, showing message.');
             showNoCurrenciesMessage();
         } else {
-            console.log('reports.js: Currencies selected, starting real-time updates.');
             startRealTimeUpdates();
             setupScrollAnimation();
         }
@@ -67,11 +62,9 @@
             }
 
             const data = await fetchPriceData(symbols);
-            console.log('reports.js: Data received from API:', data);
             updateReports(data);
 
         } catch (error) {
-            console.error('reports.js: Error fetching currency data:', error);
             showError();
         }
     }
@@ -103,7 +96,6 @@
 
             return data;
         } catch (error) {
-            console.error('Error fetching price data:', error);
             showError(error.message || 'Failed to fetch real-time price data. Please check your internet connection and try again.');
             throw error;
         }
@@ -289,7 +281,7 @@
                 updateExistingChart(currencyId, history);
             }
         } catch (error) {
-            console.error('Chart update failed:', error);
+            showError();
         }
     }
 
