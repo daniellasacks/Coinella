@@ -83,7 +83,9 @@
          if (reportsContent) reportsContent.appendChild(canvasContainer);
 
         const canvas = document.getElementById('realtimeChart');
-        if (!canvas) return;
+        if (!canvas) {
+             return;
+        }
 
         const ctx = canvas.getContext('2d');
         realtimeChart = new Chart(ctx, {
@@ -117,8 +119,6 @@
             const symbols = getCurrencySymbols();
             
             if (!symbols) {
-                 // This should ideally not happen if startRealTimeUpdates is only called when size > 0
-                 // but as a safeguard:
                  showNoCurrenciesMessage();
                  return;
              }
@@ -132,9 +132,10 @@
     }
 
     function getCurrencySymbols() {
-         return Array.from(selectedCurrenciesData.values())
+        const symbols = Array.from(selectedCurrenciesData.values())
              .map(item => item.symbol)
              .join(',').toUpperCase(); // Ensure symbols are uppercase for API
+         return symbols;
     }
 
     async function fetchPriceData(symbols) {
@@ -166,7 +167,9 @@
     }
 
     function updateChartData(data) {
-        if (!realtimeChart) return;
+        if (!realtimeChart) {
+             return;
+        }
 
          // Add a new timestamp label (optional, but good for tracking)
          const now = new Date();
@@ -187,8 +190,8 @@
                  history.push(priceInfo);
              } else {
                  // Push the last known price or null/undefined if no history
-                 history.push(history.length > 0 ? history[history.length - 1] : null);
-                 showError(`Could not fetch data for ${symbol}. Displaying last known price.`);
+                 const lastPrice = history.length > 0 ? history[history.length - 1] : null;
+                 history.push(lastPrice);
              }
 
              if (history.length > HISTORY_LENGTH) {
