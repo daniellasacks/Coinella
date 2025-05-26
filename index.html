@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coinella - Cryptocurrency Information</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-brand">coinella</div>
+        <div class="nav-links">
+            <a href="index.html" class="active">Home</a>
+            <a href="reports.html">Real-time Reports</a>
+            <a href="about.html">About</a>
+        </div>
+        <div class="search-container">
+            <input type="search" id="searchInput" placeholder="Search currencies...">
+            <i class="fas fa-search"></i>
+        </div>
+    </nav>
+
+    <!-- Parallax Header -->
+    <header class="parallax-header">
+        <h1>coinella</h1>
+        <p class="header-tagline">Track. Analyze. Invest.</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div id="currencyCards" class="currency-grid">
+            <!-- Currency cards will be dynamically inserted here -->
+        </div>
+    </main>
+
+    <!-- Dialog Box Template -->
+    <div id="dialogBox" class="dialog-box">
+        <div class="dialog-content">
+            <h3>Maximum Currencies Reached</h3>
+            <p>You can only select up to 5 currencies. Please deselect one to add another.</p>
+            <div id="selectedCurrencies"></div>
+            <button id="closeDialog">Close</button>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html> 

@@ -1,0 +1,261 @@
+/* Reports Page Styles */
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #34495e;
+    --text-color: #2c3e50;
+    --light-text: #7f8c8d;
+    --background: #f4f4f4;
+    --card-background: rgba(255, 255, 255, 0.9);
+    --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+    --positive-color: #2ecc71;
+    --negative-color: #e74c3c;
+}
+
+.reports-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.reports-header {
+    background: var(--card-background);
+    border-radius: 15px;
+    padding: 40px;
+    margin-bottom: 40px;
+    box-shadow: var(--card-shadow);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: var(--transition);
+    text-align: center;
+}
+
+.reports-header.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.section-icon {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.reports-header h2 {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.reports-header p {
+    color: var(--text-color);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.reports-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.currency-report {
+    background: var(--card-background);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.currency-report.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.currency-report:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.currency-report-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.currency-report-header img {
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.currency-report-header h2 {
+    margin: 0;
+    color: var(--text-color);
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.currency-report-header p {
+    margin: 5px 0 0;
+    color: var(--light-text);
+    font-size: 0.9rem;
+}
+
+.price-info {
+    margin-bottom: 25px;
+    padding: 15px;
+    background: rgba(52, 152, 219, 0.1);
+    border-radius: 10px;
+}
+
+.current-price {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.price-change {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-left: 15px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.price-change.positive {
+    background-color: var(--positive-color);
+    color: white;
+}
+
+.price-change.negative {
+    background-color: var(--negative-color);
+    color: white;
+}
+
+.chart-container {
+    position: relative;
+    height: 250px;
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+}
+
+/* Loading State */
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--light-text);
+    background: var(--card-background);
+    border-radius: 15px;
+    box-shadow: var(--card-shadow);
+}
+
+.loading i {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* No Currencies Selected State */
+.no-currencies {
+    text-align: center;
+    padding: 40px;
+    background: var(--card-background);
+    border-radius: 15px;
+    box-shadow: var(--card-shadow);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: var(--transition);
+}
+
+.no-currencies.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.no-currencies h2 {
+    color: var(--text-color);
+    margin: 20px 0;
+    font-size: 1.8rem;
+}
+
+.no-currencies p {
+    color: var(--light-text);
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+}
+
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 25px;
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+}
+
+.btn-primary i {
+    font-size: 1.1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .reports-container {
+        grid-template-columns: 1fr;
+    }
+
+    .currency-report {
+        margin-bottom: 20px;
+    }
+
+    .reports-header {
+        padding: 30px;
+    }
+
+    .current-price {
+        font-size: 1.5rem;
+    }
+
+    .chart-container {
+        height: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .reports-header {
+        padding: 20px;
+    }
+
+    .currency-report {
+        padding: 20px;
+    }
+
+    .price-info {
+        padding: 10px;
+    }
+} 

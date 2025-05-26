@@ -1,0 +1,754 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    background-image: url('../assets/1.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+/* Navbar Styles */
+.navbar {
+    background-color: rgba(44, 62, 80, 0.8);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-brand {
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 1rem;
+    padding: 0.5rem;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover, .nav-links a.active {
+    color: #3498db;
+}
+
+.search-container {
+    position: relative;
+}
+
+.search-container input {
+    padding: 0.5rem 2rem 0.5rem 1rem;
+    border: none;
+    border-radius: 20px;
+    background-color: #34495e;
+    color: #fff;
+}
+
+.search-container i {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #fff;
+}
+
+/* Parallax Header */
+.parallax-header {
+    height: 60vh;
+    background-image: url('../assets/1.jpg');
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 60px;
+}
+
+.parallax-header h1 {
+    color: #fff;
+    font-size: 6rem;
+    font-weight: bold;
+    text-shadow: 10px 10px 40px rgba(0, 0, 0, 1);
+    margin-bottom: 1rem;
+}
+
+.header-tagline {
+    color: #fff;
+    font-size: 2.6rem;
+    font-weight: bold;
+    text-shadow: 8px 8px 30px rgba(0, 0, 0, 1);
+    letter-spacing: 2px;
+    margin-top: 0.5rem;
+}
+
+.header-description {
+    color: #fff;
+    font-size: 1.8rem;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.6);
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.4;
+}
+
+/* Container */
+.container {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    overflow: hidden;
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Currency Grid */
+.currency-grid {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 2rem;
+    padding: 2rem 1rem;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: auto;
+    margin: 0 auto;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    min-height: 300px;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+.currency-grid::-webkit-scrollbar {
+    display: none;
+}
+
+.currency-grid .currency-card-container:first-child {
+    margin-left: 0;
+}
+
+/* Currency Card Container */
+.currency-card-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    min-width: 180px;
+    flex-shrink: 0;
+}
+
+/* Currency Card */
+.currency-card {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    perspective: 1000px;
+    cursor: pointer;
+    flex-shrink: 0;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.currency-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+}
+
+.currency-card:hover .currency-card-inner {
+    transform: rotateY(180deg);
+}
+
+.currency-card-front,
+.currency-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.currency-card-front {
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.currency-card-back {
+    background-color: rgba(44, 62, 80, 0.9);
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    overflow: hidden;
+    color: #fff;
+}
+
+.currency-card-back::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    background-position: center;
+    filter: blur(40px);
+    opacity: 0.7;
+    z-index: -1;
+}
+
+.more-info-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+    margin-top: 1rem;
+}
+
+.more-info-btn:hover {
+    background-color: #2980b9;
+    transform: scale(1.05);
+}
+
+/* Expanded Card */
+.currency-card.expanded {
+    width: 300px;
+    height: 350px;
+    z-index: 1000;
+    position: relative;
+}
+
+.currency-card.expanded .currency-card-inner {
+    transform: none;
+    height: 100%;
+}
+
+.currency-card.expanded .currency-card-front {
+    display: none;
+}
+
+.currency-card.expanded .currency-card-back {
+    transform: none;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 1.5rem;
+    padding-bottom: 7rem;
+    color: #2c3e50;
+    justify-content: flex-start;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.currency-info {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    max-width: 100%;
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 0.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    word-wrap: break-word;
+}
+
+.currency-info h3 {
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.star-rating {
+    color: #f1c40f;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    letter-spacing: 2px;
+}
+
+/* Price Info */
+.price-info {
+    margin-top: 0.5rem;
+    text-align: center;
+}
+
+.price-info p {
+    color: #34495e;
+    margin: 0.3rem 0;
+    font-size: 1.1rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.currency-exchange-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+}
+
+/* Star Icon for Top Coins */
+.top-coin {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    color: #f1c40f;
+    font-size: 1.5rem;
+    z-index: 1;
+}
+
+/* Load More Button */
+.load-more {
+    grid-column: 1 / -1;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.load-more-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background-color 0.3s ease;
+}
+
+.load-more-btn:hover {
+    background-color: #2980b9;
+}
+
+/* Switch Styles */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    margin-top: 1rem;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Dialog Box */
+.dialog-box {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1001;
+    pointer-events: none;
+}
+
+.dialog-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    min-width: 300px;
+    z-index: 1002;
+    pointer-events: auto;
+}
+
+.dialog-content h3 {
+    margin-bottom: 1rem;
+    color: #2c3e50;
+}
+
+.dialog-content button {
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+.dialog-content button:hover {
+    background-color: #2980b9;
+}
+
+/* More Info Section */
+.more-info {
+    display: none;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.more-info.active {
+    display: block;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Navigation Buttons */
+.nav-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+}
+
+.nav-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.nav-button:hover {
+    background-color: #2980b9;
+    transform: scale(1.05);
+}
+
+.nav-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Navigation Arrows */
+.scroll-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0);
+    color: #fff;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+.scroll-arrow:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.scroll-arrow.left:hover {
+    transform: translateY(-50%) translateX(5px);
+}
+
+.scroll-arrow.right:hover {
+    transform: translateY(-50%) translateX(-5px);
+}
+
+.scroll-arrow.left {
+    left: 0;
+}
+
+.scroll-arrow.right {
+    right: 0;
+}
+
+.scroll-arrow.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .currency-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .currency-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .nav-links {
+        margin: 1rem 0;
+    }
+
+    .parallax-header h1 {
+        font-size: 3rem;
+    }
+
+    .container {
+        padding: 0;
+    }
+
+    .currency-grid {
+        padding: 2rem 1rem;
+        justify-content: flex-start;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    .currency-card-container {
+        min-width: 180px;
+    }
+    
+    .currency-card {
+        width: 180px;
+        height: 180px;
+    }
+
+    .scroll-arrow {
+        width: 30px;
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .currency-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Add overlay when card is expanded */
+.currency-card.expanded::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+}
+
+/* Adjust button styling within expanded state */
+.currency-card.expanded .more-info-btn {
+    position: relative;
+    margin-top: auto;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    z-index: 2;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    width: 80%;
+    max-width: 200px;
+}
+
+.currency-card.expanded .more-info-btn:hover {
+    background-color: #2980b9;
+    transform: scale(1.05);
+}
+
+.volume-info {
+    margin-top: 1rem;
+    padding: 0.8rem;
+    background-color: rgba(52, 152, 219, 0.1);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.volume-info i {
+    color: #3498db;
+    font-size: 1.2rem;
+}
+
+.volume-info:hover {
+    background-color: rgba(52, 152, 219, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+/* Features Section */
+.features-section {
+    align-items: center;
+    padding: 2rem;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    margin: 2rem 0;
+}
+
+.features-section h2 {
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+    text-align: center;
+}
+
+/* Features Grid */
+.features-grid {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    justify-content: center;
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 1rem 0.5rem;
+    margin-top: 2rem;
+}
+
+.feature-item {
+    flex: 0 0 250px;
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.feature-item:hover {
+    transform: translateY(-5px);
+}
+
+.feature-item i {
+    font-size: 2.5rem;
+    color: #3498db;
+    margin-bottom: 1rem;
+}
+
+.feature-item h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.feature-item p {
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Add overlay when card is expanded */
+.currency-card.expanded::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+} 

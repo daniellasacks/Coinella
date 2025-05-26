@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Reports - Coinella</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/reports.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-brand">coinella</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="reports.html" class="active">Real-time Reports</a>
+            <a href="about.html">About</a>
+        </div>
+        <div class="search-container">
+            <input type="search" id="searchInput" placeholder="Search currencies...">
+            <i class="fas fa-search"></i>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="animate-on-scroll">Real-time Reports</h1>
+            <p class="hero-subtitle animate-on-scroll">Track and analyze your selected cryptocurrencies</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div class="reports-content">
+            <!-- Reports Header -->
+            <div class="reports-header card animate-on-scroll">
+                <div class="section-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h2>Currency Analysis</h2>
+                <p>Select up to 5 currencies on the home page to view their real-time data and performance metrics here.</p>
+            </div>
+            
+            <!-- Reports Container -->
+            <div id="reportsContainer" class="reports-container">
+            </div>
+
+            <!-- No Currencies Message -->
+            <div id="noCurrencies" class="no-currencies card animate-on-scroll" style="display: none;">
+                <div class="section-icon">
+                    <i class="fas fa-plus-circle"></i>
+                </div>
+                <h2>No Currencies Selected</h2>
+                <p>Please select up to 5 currencies on the home page to view their real-time data here.</p>
+                <a href="index.html" class="btn-primary">
+                    <i class="fas fa-arrow-left"></i> Go to Home
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/reports.js"></script>
+</body>
+</html> 
