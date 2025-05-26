@@ -258,4 +258,25 @@
     .price-info {
         padding: 10px;
     }
+}
+
+/* Chart Main Container Styling */
+.chart-main-container {
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+    backdrop-filter: blur(10px); /* Apply blur effect */
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 2rem; /* Add some internal spacing */
+    margin-top: 2rem; /* Space below the header */
+    min-height: 400px; /* Ensure a minimum height for the chart */
+    display: flex; /* Use flexbox to center canvas */
+    justify-content: center; /* Center canvas horizontally */
+    align-items: center; /* Center canvas vertically */
+}
+
+/* Style for the canvas element itself to ensure it takes available space */
+.chart-main-container canvas {
+    max-width: 100%; /* Ensure canvas is responsive */
+    height: 100%; /* Allow canvas to fill container height */
 } 

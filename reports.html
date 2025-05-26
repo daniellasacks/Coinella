@@ -44,12 +44,13 @@
                 <p>Select up to 5 currencies on the home page to view their real-time data and performance metrics here.</p>
             </div>
             
-            <!-- Reports Container -->
-            <div id="reportsContainer" class="reports-container">
+            <!-- Chart Container -->
+            <div class="chart-main-container card animate-on-scroll">
+                 <canvas id="realtimeChart"></canvas>
             </div>
 
-            <!-- No Currencies Message -->
-            <div id="noCurrencies" class="no-currencies card animate-on-scroll" style="display: none;">
+            <!-- No Currencies Message (Handled by JS) -->
+            <!-- <div id="noCurrencies" class="no-currencies card animate-on-scroll" style="display: none;">
                 <div class="section-icon">
                     <i class="fas fa-plus-circle"></i>
                 </div>
@@ -58,7 +59,7 @@
                 <a href="index.html" class="btn-primary">
                     <i class="fas fa-arrow-left"></i> Go to Home
                 </a>
-            </div>
+            </div> -->
         </div>
     </main>
 

@@ -3,13 +3,16 @@
     
     let selectedCurrenciesData = new Map();
     let priceHistory = new Map();
-    let charts = new Map();
+    let realtimeChart = null; // Use a single chart instance
     const UPDATE_INTERVAL = 1000;
+    const HISTORY_LENGTH = 60; // Store up to 60 data points (1 minute at 1s interval)
 
-    const reportsContainer = document.getElementById('reportsContainer');
+    const reportsContainer = document.getElementById('reportsContainer'); // Keep for now, might need a placeholder
+    const chartContainer = document.querySelector('.chart-main-container'); // New container for the single chart
+    const reportsContent = document.querySelector('.reports-content'); // Container for reports and message
 
     function init() {
-        if (!reportsContainer) {
+        if (!reportsContent) {
             return;
         }
         loadSelectedCurrenciesData();
@@ -17,8 +20,9 @@
         if (selectedCurrenciesData.size === 0) {
             showNoCurrenciesMessage();
         } else {
+            initializeChart();
             startRealTimeUpdates();
-            setupScrollAnimation();
+            setupScrollAnimation(); // Keep if other elements animate
         }
     }
 
@@ -28,7 +32,15 @@
         if (savedCurrencies) {
             try {
                 const savedArray = JSON.parse(savedCurrencies);
-                selectedCurrenciesData = new Map(savedArray.map(item => [item.id, item]));
+                // Ensure selectedCurrenciesData map is populated with necessary info (id, symbol, name)
+                selectedCurrenciesData = new Map(savedArray.map(item => [
+                    item.id, 
+                    { 
+                        id: item.id, 
+                        symbol: item.symbol,
+                        name: item.name || item.id // Use id as fallback name
+                    }
+                ]));
             } catch (e) {
                 localStorage.removeItem('selectedCurrencies');
                 selectedCurrenciesData = new Map();
@@ -37,14 +49,62 @@
     }
 
     function showNoCurrenciesMessage() {
-        reportsContainer.innerHTML = `
-            <div class="no-currencies">
+        // Clear previous content
+        if (reportsContent) reportsContent.innerHTML = '';
+
+        const messageElement = document.createElement('div');
+        messageElement.className = 'no-currencies card animate-on-scroll'; // Use card styling
+        messageElement.innerHTML = `
+            <div class="section-icon">
                 <i class="fas fa-coins"></i>
-                <h2>No Currencies Selected</h2>
-                <p>Please select up to 5 currencies on the home page to view their real-time data here.</p>
-                <a href="index.html">Go to Home Page</a>
             </div>
+            <h2>No Currencies Selected</h2>
+            <p>Please select up to 5 currencies on the home page to view their real-time data here.</p>
+            <a href="index.html" class="btn-primary">
+                <i class="fas fa-arrow-left"></i> Go to Home
+            </a>
         `;
+         if (reportsContent) reportsContent.appendChild(messageElement);
+
+        // Destroy chart if it exists
+        if (realtimeChart) {
+            realtimeChart.destroy();
+            realtimeChart = null;
+        }
+    }
+
+    function initializeChart() {
+        // Clear previous content
+         if (reportsContent) reportsContent.innerHTML = '';
+
+        const canvasContainer = document.createElement('div');
+        canvasContainer.className = 'chart-main-container card animate-on-scroll'; // Use card styling
+        canvasContainer.innerHTML = '<canvas id="realtimeChart"></canvas>';
+         if (reportsContent) reportsContent.appendChild(canvasContainer);
+
+        const canvas = document.getElementById('realtimeChart');
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        realtimeChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array(HISTORY_LENGTH).fill(''), // Initialize with empty labels
+                datasets: Array.from(selectedCurrenciesData.values()).map(currency => ({
+                    label: currency.symbol, // Use symbol as label
+                    data: [],
+                    borderColor: getRandomColor(), // Assign a random color
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.4
+                }))
+            },
+            options: createChartOptions()
+        });
+         // Initialize priceHistory for each selected currency
+        selectedCurrenciesData.forEach(currency => {
+            priceHistory.set(currency.id, []);
+        });
     }
 
     function startRealTimeUpdates() {
@@ -57,22 +117,24 @@
             const symbols = getCurrencySymbols();
             
             if (!symbols) {
-                showNoCurrenciesMessage();
-                return;
-            }
+                 // This should ideally not happen if startRealTimeUpdates is only called when size > 0
+                 // but as a safeguard:
+                 showNoCurrenciesMessage();
+                 return;
+             }
 
             const data = await fetchPriceData(symbols);
-            updateReports(data);
+            updateChartData(data);
 
         } catch (error) {
-            showError();
+            showError(); // Use the enhanced showError
         }
     }
 
     function getCurrencySymbols() {
-        return Array.from(selectedCurrenciesData.values())
-            .map(item => item.symbol)
-            .join(',');
+         return Array.from(selectedCurrenciesData.values())
+             .map(item => item.symbol)
+             .join(',').toUpperCase(); // Ensure symbols are uppercase for API
     }
 
     async function fetchPriceData(symbols) {
@@ -90,9 +152,11 @@
                 throw new Error(data.Message || 'API returned an error');
             }
             
-            if (!data || Object.keys(data).length === 0) {
-                throw new Error('No price data received from the API');
-            }
+            // Check if data contains expected currency symbols
+             const fetchedSymbols = Object.keys(data).filter(key => key !== 'Response' && key !== 'Message');
+             if (fetchedSymbols.length === 0) {
+                 throw new Error('No price data received for selected currencies');
+             }
 
             return data;
         } catch (error) {
@@ -101,210 +165,41 @@
         }
     }
 
-    function updateReports(data) {
-        updateCurrencyReports(data);
-        cleanupRemovedReports();
-    }
+    function updateChartData(data) {
+        if (!realtimeChart) return;
 
-    function updateCurrencyReports(data) {
-        Array.from(selectedCurrenciesData.keys()).forEach(currencyId => {
-            const currencyData = selectedCurrenciesData.get(currencyId);
-            const symbol = currencyData?.symbol;
-            const priceInfo = (symbol && data[symbol]) ? data[symbol].USD : undefined;
+         // Add a new timestamp label (optional, but good for tracking)
+         const now = new Date();
+         const timeLabel = `${now.getMinutes()}:${now.getSeconds().toString().padStart(2, '0')}`;
+         realtimeChart.data.labels.push(timeLabel);
+         if (realtimeChart.data.labels.length > HISTORY_LENGTH) {
+             realtimeChart.data.labels.shift();
+         }
+
+        realtimeChart.data.datasets.forEach(dataset => {
+            const symbol = dataset.label;
+            const currencyData = Array.from(selectedCurrenciesData.values()).find(c => c.symbol === symbol);
+             const priceInfo = (currencyData && data[symbol]) ? data[symbol].USD : undefined;
+
+             const history = priceHistory.get(currencyData.id);
 
             if (priceInfo !== undefined && priceInfo !== null) {
-                updatePriceHistory(currencyId, priceInfo);
-                updateOrCreateReport(currencyId, priceInfo);
-            } else {
-                updateOrCreateReport(currencyId, undefined);
-            }
+                 history.push(priceInfo);
+             } else {
+                 // Push the last known price or null/undefined if no history
+                 history.push(history.length > 0 ? history[history.length - 1] : null);
+                 showError(`Could not fetch data for ${symbol}. Displaying last known price.`);
+             }
+
+             if (history.length > HISTORY_LENGTH) {
+                 history.shift();
+             }
+
+            // Update the dataset with the latest history slice
+            dataset.data = history;
         });
-    }
 
-    function cleanupRemovedReports() {
-        Array.from(reportsContainer.children).forEach(reportElement => {
-            const id = reportElement.id.replace('report-', '');
-            if (!selectedCurrenciesData.has(id)) {
-                removeReport(id, reportElement);
-            }
-        });
-    }
-
-    function removeReport(id, reportElement) {
-        reportElement.remove();
-        priceHistory.delete(id);
-        if (charts.has(id)) {
-            charts.get(id).destroy();
-            charts.delete(id);
-        }
-    }
-
-    function updatePriceHistory(currencyId, price) {
-        if (!priceHistory.has(currencyId)) {
-            priceHistory.set(currencyId, []);
-        }
-        
-        const history = priceHistory.get(currencyId);
-        if (price !== undefined && price !== null) {
-            history.push(price);
-        }
-        
-        if (history.length > 30) {
-            history.shift();
-        }
-    }
-
-    function updateOrCreateReport(currencyId, price) {
-        let reportElement = document.getElementById(`report-${currencyId}`);
-        
-        if (!reportElement && selectedCurrenciesData.has(currencyId)) {
-            reportElement = createReportElement(currencyId);
-            reportsContainer.appendChild(reportElement);
-            reportElement = document.getElementById(`report-${currencyId}`);
-        }
-        
-        if (reportElement) {
-            updateReportContent(reportElement, currencyId, price);
-            updateChart(currencyId);
-        }
-    }
-
-    function createReportElement(currencyId) {
-        const div = document.createElement('div');
-        div.id = `report-${currencyId}`;
-        div.className = 'currency-report';
-        
-        const currencyData = selectedCurrenciesData.get(currencyId);
-        const currencyName = currencyData?.name || 'Unknown';
-        const currencySymbol = currencyData?.symbol || 'N/A';
-        const currencyImage = currencyData?.image || '';
-
-        div.innerHTML = `
-            <div class="currency-report-header">
-                <img src="${currencyImage}" alt="${currencyName}" class="currency-icon">
-                <div>
-                    <h2>${currencyName} (${currencySymbol})</h2>
-                    <p class="loading-text">Loading...</p>
-                </div>
-            </div>
-            <div class="price-info">
-                <span class="current-price">$0.00</span>
-                <span class="price-change">0.00%</span>
-                <span class="loading-placeholder"></span>
-            </div>
-            <div class="chart-container">
-                <canvas id="chart-${currencyId}"></canvas>
-            </div>
-        `;
-        
-        return div;
-    }
-
-    function updateReportContent(reportElement, currencyId, price) {
-        const currentPriceSpan = reportElement.querySelector('.current-price');
-        const priceChangeSpan = reportElement.querySelector('.price-change');
-        const loadingParagraph = reportElement.querySelector('.loading-text');
-        const loadingPlaceholder = reportElement.querySelector('.loading-placeholder');
-
-        updatePriceDisplay(currentPriceSpan, price, loadingParagraph, loadingPlaceholder);
-        updatePriceChange(reportElement, currencyId, price, priceChangeSpan);
-    }
-
-    function updatePriceDisplay(currentPriceSpan, price, loadingParagraph, loadingPlaceholder) {
-        if (price !== undefined && price !== null) {
-            currentPriceSpan.textContent = formatPrice(price);
-            hideLoadingElements(loadingParagraph, loadingPlaceholder);
-        } else {
-            currentPriceSpan.textContent = '$N/A';
-            showLoadingElements(loadingParagraph, loadingPlaceholder);
-        }
-    }
-
-    function formatPrice(price) {
-        return `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 10 })}`;
-    }
-
-    function hideLoadingElements(loadingParagraph, loadingPlaceholder) {
-        if (loadingParagraph) loadingParagraph.style.display = 'none';
-        if (loadingPlaceholder) loadingPlaceholder.style.display = 'none';
-    }
-
-    function showLoadingElements(loadingParagraph, loadingPlaceholder) {
-        if (loadingParagraph) loadingParagraph.style.display = '';
-        if (loadingPlaceholder) loadingPlaceholder.style.display = '';
-    }
-
-    function updatePriceChange(reportElement, currencyId, price, priceChangeSpan) {
-        const history = priceHistory.get(currencyId);
-        
-        if (history && history.length > 1) {
-            const previousPrice = history[history.length - 2];
-            const change = calculatePriceChange(price, previousPrice);
-            updatePriceChangeDisplay(priceChangeSpan, change);
-        } else {
-            setDefaultPriceChange(priceChangeSpan);
-        }
-    }
-
-    function calculatePriceChange(currentPrice, previousPrice) {
-        if (previousPrice === undefined || previousPrice === null || previousPrice === 0) {
-            return null;
-        }
-        return ((currentPrice - previousPrice) / previousPrice) * 100;
-    }
-
-    function updatePriceChangeDisplay(priceChangeSpan, change) {
-        if (change !== null) {
-            const changeText = `${change >= 0 ? '+' : ''}${change.toFixed(2)}%`;
-            priceChangeSpan.textContent = changeText;
-            priceChangeSpan.className = `price-change ${change >= 0 ? 'positive' : 'negative'}`;
-        } else {
-            setDefaultPriceChange(priceChangeSpan);
-        }
-    }
-
-    function setDefaultPriceChange(priceChangeSpan) {
-        priceChangeSpan.textContent = 'N/A';
-        priceChangeSpan.className = 'price-change';
-    }
-
-    function updateChart(currencyId) {
-        const history = priceHistory.get(currencyId);
-        const canvas = document.getElementById(`chart-${currencyId}`);
-        
-        if (!canvas) return;
-        
-        try {
-            if (!charts.has(currencyId)) {
-                createNewChart(currencyId, canvas, history);
-            } else {
-                updateExistingChart(currencyId, history);
-            }
-        } catch (error) {
-            showError();
-        }
-    }
-
-    function createNewChart(currencyId, canvas, history) {
-        charts.set(currencyId, new Chart(canvas, {
-            type: 'line',
-            data: createChartData(currencyId, history),
-            options: createChartOptions()
-        }));
-    }
-
-    function createChartData(currencyId, history) {
-        return {
-            labels: Array(history?.length || 0).fill(''),
-            datasets: [{
-                label: selectedCurrenciesData.get(currencyId)?.symbol || currencyId,
-                data: history,
-                borderColor: '#3498db',
-                borderWidth: 2,
-                fill: false,
-                tension: 0.4
-            }]
-        };
+        realtimeChart.update();
     }
 
     function createChartOptions() {
@@ -313,29 +208,76 @@
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: false
-                }
+                    display: true, // Show legend for multiple datasets
+                    position: 'top',
+                    labels: {
+                         color: '#333'
+                    }
+                },
+                 title: {
+                     display: true,
+                     text: 'Real-time Price Data (USD)',
+                     color: '#333',
+                     font: {
+                         size: 16
+                     }
+                 }
             },
             scales: {
                 x: {
-                    display: false
+                     display: true, // Show X-axis labels
+                     title: {
+                         display: true,
+                         text: 'Time',
+                         color: '#333'
+                     },
+                     ticks: {
+                         color: '#666'
+                     },
+                     grid: {
+                         color: 'rgba(0, 0, 0, 0.05)'
+                     }
                 },
                 y: {
-                    beginAtZero: false
+                    beginAtZero: false,
+                     title: {
+                         display: true,
+                         text: 'Price (USD)',
+                         color: '#333'
+                     },
+                     ticks: {
+                         color: '#666'
+                     },
+                     grid: {
+                         color: 'rgba(0, 0, 0, 0.05)'
+                     }
                 }
             },
             animation: {
-                duration: 0
-            }
+                duration: 0 // Disable animation for real-time updates
+            },
+             hover: {
+                 mode: 'nearest',
+                 intersect: false
+             },
+             tooltips: {
+                 mode: 'index',
+                 intersect: false
+             }
         };
     }
 
-    function updateExistingChart(currencyId, history) {
-        const chart = charts.get(currencyId);
-        chart.data.datasets[0].data = history;
-        chart.update();
+    // Helper function to generate random colors for chart lines
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
     }
 
+    // Use the existing showError function from previous step
     function showError(message = 'An error occurred while fetching real-time data. Please try again later.') {
         const errorDiv = document.createElement('div');
         errorDiv.className = 'error-message';
@@ -346,12 +288,20 @@
             <button onclick="location.reload()">Try Again</button>
         `;
         
-        if (reportsContainer) {
-            reportsContainer.innerHTML = '';
-            reportsContainer.appendChild(errorDiv);
+        // Clear existing content and append error message
+        if (reportsContent) {
+             reportsContent.innerHTML = '';
+             reportsContent.appendChild(errorDiv);
+         }
+
+        // Destroy chart if it exists
+        if (realtimeChart) {
+            realtimeChart.destroy();
+            realtimeChart = null;
         }
     }
 
+    // Keep if there are other elements that need scroll animation
     function setupScrollAnimation() {
         const animateElements = document.querySelectorAll('.animate-on-scroll');
         
@@ -359,9 +309,12 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
+                } else {
+                     // Optional: remove 'visible' class when out of view
+                     // entry.target.classList.remove('visible');
                 }
             });
-        });
+        }, { threshold: 0.1 }); // Trigger when 10% of the element is visible
 
         animateElements.forEach(element => {
             observer.observe(element);
@@ -369,4 +322,13 @@
     }
 
     document.addEventListener('DOMContentLoaded', init);
+
+    // Optional: Cleanup chart on page unload
+     window.addEventListener('beforeunload', () => {
+         if (realtimeChart) {
+             realtimeChart.destroy();
+             realtimeChart = null;
+         }
+     });
+
 })(); 
