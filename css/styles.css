@@ -34,6 +34,7 @@ body {
     color: #fff;
     font-size: 1.5rem;
     font-weight: bold;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 .nav-links {
@@ -110,7 +111,7 @@ body {
 .header-description {
     color: #fff;
     font-size: 1.8rem;
-    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.6);
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
     text-align: center;
     max-width: 600px;
     margin: 0 auto;
@@ -124,9 +125,9 @@ body {
     padding: 0 1rem;
     overflow: hidden;
     position: relative;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: transparent;
     border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    box-shadow: none;
 }
 
 /* Currency Grid */
@@ -741,14 +742,92 @@ input:checked + .slider:before {
     line-height: 1.6;
 }
 
-/* Add overlay when card is expanded */
-.currency-card.expanded::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: -1;
+/* About Section Styling to match Reports Cards */
+/* .about-section { */
+    /* background: rgba(255, 255, 255, 0.9); */
+    /* border-radius: 15px; */
+    /* padding: 40px; */
+    /* margin: 2rem auto; */
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+    /* opacity: 0; */
+    /* transform: translateY(20px); */
+    /* transition: all 0.3s ease; */
+/* } */
+
+/* .about-section.visible { */
+    /* opacity: 1; */
+    /* transform: translateY(0); */
+/* } */
+
+/* .about-section .section-icon { */
+    /* font-size: 2rem; */
+    /* color: #3498db; */
+    /* margin-bottom: 20px; */
+    /* text-align: center; */
+/* } */
+
+/* .about-section h2 { */
+    /* font-size: 2rem; */
+    /* color: #3498db; */
+    /* margin-bottom: 20px; */
+    /* font-weight: bold; */
+    /* text-align: center; */
+/* } */
+
+/* .about-section p { */
+    /* color: #2c3e50; */
+    /* font-size: 1.1rem; */
+    /* max-width: 800px; */
+    /* margin: 0.5rem auto; */
+    /* text-align: center; */
+/* } */
+
+/* Ensure nested elements like features grid and developer profile are styled correctly within the new padding */
+/* .about-section .features-grid, */
+/* .about-section .developer-profile, */
+/* .about-section .tech-stack { */
+    /* margin-top: 20px; */
+/* } */
+
+/* .about-section .developer-profile { */
+    /* display: flex; */
+    /* flex-wrap: wrap; */
+    /* gap: 30px; */
+    /* justify-content: center; */
+    /* align-items: flex-start; */
+/* } */
+
+/* Adjust padding for inner content if needed */
+/* .about-section .developer-details, */
+/* .about-section .tech-category { padding: 20px; } */
+
+/* Add subtle shadow to the star icon */
+.parallax-header .section-icon i {
+    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.8));
+}
+
+.page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+    margin: 2rem 0;
+    text-align: center;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #eee;
+}
+
+/* About Page Hero Specific Styles */
+/* .about-hero { */
+    /* background-image: none !important; */
+    /* background-color: transparent; */
+/* } */
+
+.hero-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 1;
+    position: relative;
 } 
